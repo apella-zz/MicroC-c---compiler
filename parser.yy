@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "Node.h"
-
+using std::vector;
 %}
 
 /*** yacc/bison Declarations ***/
@@ -65,10 +65,10 @@
   class NType *type;
   class NLeft_expression *lexp;
   class NExpression *exp;
-  std::vector<NExpression*>  *exprvec;
-  std::vector<NVar_declaration*>  *varvec;
-  std::vector<NStatement*>  *statvec;
   class NVar *var;
+  std::vector<NExpression *>  *exprvec;
+  std::vector<NVar_declaration*>*  varvec;
+  std::vector<NStatement *>  *statvec;
   int token;
   char *name;
 }

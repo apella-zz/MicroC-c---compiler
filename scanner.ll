@@ -4,7 +4,8 @@
 %{ /*** C/C++ Declarations ***/
 
 #include <string>
-
+#include <iostream>
+#include <vector>
 #include "scanner.h"
 /* import the parser's token type into a local typedef */
 typedef example::Parser::token token;
@@ -92,7 +93,7 @@ while                   return token::WHILE;
 "<"                     return token::LESS;
 ">"                     return token::GREATER;
 "!"                     return token::NOT;
-"!="                return token::NEQUAL;
+"!="                	return token::NEQUAL;
 ";"			return token::SEMICOLON;
 ","			return token::COMMA;
 "."			return token::DOT;

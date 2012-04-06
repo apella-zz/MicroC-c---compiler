@@ -17,7 +17,6 @@ all: exprtest
 
 parser.cc: parser.yy
 	$(YACC) -o parser.cc --defines=parser.h parser.yy
-
 scanner.cc: scanner.ll
 	$(LEX) -o scanner.cc scanner.ll
 
@@ -28,7 +27,7 @@ scanner.cc: scanner.ll
 
 # Link executable
 
-exprtest: parser.o scanner.o driver.o main.o
+exprtest: main.o parser.o scanner.o driver.o
 	$(CXX) $(LDFLAGS) -o $@ main.o parser.o scanner.o driver.o
 
 clean:
