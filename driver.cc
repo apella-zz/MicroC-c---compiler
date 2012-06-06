@@ -1,5 +1,5 @@
 // $Id: driver.cc 39 2008-08-03 10:07:15Z tb $
-/** \file driver.cc Implementation of the example::Driver class. */
+/** \file driver.cc Implementation of the miniC::Driver class. */
 
 #include <fstream>
 #include <sstream>
@@ -7,7 +7,7 @@
 #include "driver.h"
 #include "scanner.h"
 
-namespace example {
+namespace miniC {
 
   Driver::Driver(class NProgram* _prog)
     : trace_scanning(false),
@@ -53,4 +53,4 @@ void Driver::error(const std::string& m)
     std::cerr << m << std::endl;
 }
 
-} // namespace example
+} // namespace miniC

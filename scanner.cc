@@ -58,7 +58,6 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
-#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -89,12 +88,15 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#endif /* ! C99 */
+
 #endif /* ! FLEXINT_H */
 
 /* begin standard C++ headers. */
 #include <iostream> 
 #include <errno.h>
 #include <cstdlib>
+#include <cstdio>
 #include <cstring>
 /* end standard C++ headers. */
 
@@ -152,7 +154,15 @@ typedef unsigned int flex_uint32_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
 #define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -164,12 +174,7 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
-
-extern yy_size_t yyleng;
+extern int yyleng;
 
 #define EOB_ACT_CONTINUE_SCAN 0
 #define EOB_ACT_END_OF_FILE 1
@@ -193,6 +198,11 @@ extern yy_size_t yyleng;
 
 #define unput(c) yyunput( c, (yytext_ptr)  )
 
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
@@ -211,7 +221,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	yy_size_t yy_n_chars;
+	int yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -453,7 +463,8 @@ static yyconst flex_int16_t yy_chk[119] =
 #line 5 "scanner.ll"
 
 #include <string>
-
+#include <iostream>
+#include <vector>
 #include "scanner.h"
 /* import the parser's token type into a local typedef */
 typedef example::Parser::token token;
@@ -481,9 +492,9 @@ typedef example::Parser::token_type token_type;
 /* %option stack */
 /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
-#line 47 "scanner.ll"
+#line 48 "scanner.ll"
 #define YY_USER_ACTION  yylloc->columns(yyleng);
-#line 487 "scanner.cc"
+#line 498 "scanner.cc"
 
 #define INITIAL 0
 
@@ -513,7 +524,12 @@ static int yy_flex_strlen (yyconst char * );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
+#else
 #define YY_READ_BUF_SIZE 8192
+#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -583,7 +599,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 53 "scanner.ll"
+#line 54 "scanner.ll"
 
 
  /* code to place at the beginning of yylex() */
@@ -593,7 +609,7 @@ YY_DECL
 
 
  /*** BEGIN EXAMPLE - Change the example lexer rules below ***/
-#line 597 "scanner.cc"
+#line 613 "scanner.cc"
 
 	if ( !(yy_init) )
 		{
@@ -678,62 +694,62 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 62 "scanner.ll"
+#line 63 "scanner.ll"
 break;		/* ignore white space */
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 64 "scanner.ll"
+#line 65 "scanner.ll"
 {printf("an int!\n"); return token::INT;};	/* Keywords come before NAMEs */
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 65 "scanner.ll"
+#line 66 "scanner.ll"
 return token::IF;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 66 "scanner.ll"
+#line 67 "scanner.ll"
 return token::ELSE;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 67 "scanner.ll"
+#line 68 "scanner.ll"
 return token::RETURN;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 68 "scanner.ll"
+#line 69 "scanner.ll"
 return token::FLOAT;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 69 "scanner.ll"
+#line 70 "scanner.ll"
 return token::STRUCT;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 70 "scanner.ll"
+#line 71 "scanner.ll"
 return token::READ;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 71 "scanner.ll"
+#line 72 "scanner.ll"
 return token::WRITE;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 72 "scanner.ll"
+#line 73 "scanner.ll"
 return token::LENGTH;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 73 "scanner.ll"
+#line 74 "scanner.ll"
 return token::WHILE;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 74 "scanner.ll"
+#line 75 "scanner.ll"
 {
                           yylval->name = yytext;
 			  return token::NAME;
@@ -741,7 +757,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 79 "scanner.ll"
+#line 80 "scanner.ll"
 {
 			yylval->value	= atoi(yytext);
 			return token::NUMBER;
@@ -749,102 +765,102 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 84 "scanner.ll"
+#line 85 "scanner.ll"
 return token::LPAR;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 85 "scanner.ll"
+#line 86 "scanner.ll"
 return token::RPAR;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 86 "scanner.ll"
+#line 87 "scanner.ll"
 return token::LBRACE;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 87 "scanner.ll"
+#line 88 "scanner.ll"
 return token::RBRACE;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 88 "scanner.ll"
+#line 89 "scanner.ll"
 return token::LBRACK;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 89 "scanner.ll"
+#line 90 "scanner.ll"
 return token::RBRACK;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 90 "scanner.ll"
+#line 91 "scanner.ll"
 return token::EQUAL;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 91 "scanner.ll"
+#line 92 "scanner.ll"
 return token::ASSIGN;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 92 "scanner.ll"
+#line 93 "scanner.ll"
 return token::LESS;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 93 "scanner.ll"
+#line 94 "scanner.ll"
 return token::GREATER;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 94 "scanner.ll"
+#line 95 "scanner.ll"
 return token::NOT;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 95 "scanner.ll"
+#line 96 "scanner.ll"
 return token::NEQUAL;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 96 "scanner.ll"
+#line 97 "scanner.ll"
 return token::SEMICOLON;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 97 "scanner.ll"
+#line 98 "scanner.ll"
 return token::COMMA;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 98 "scanner.ll"
+#line 99 "scanner.ll"
 return token::DOT;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 99 "scanner.ll"
+#line 100 "scanner.ll"
 return token::PLUS;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 100 "scanner.ll"
+#line 101 "scanner.ll"
 return token::MINUS;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 101 "scanner.ll"
+#line 102 "scanner.ll"
 return token::TIMES;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 102 "scanner.ll"
+#line 103 "scanner.ll"
 return token::DIVIDE;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 103 "scanner.ll"
+#line 104 "scanner.ll"
 {
 			/*fprintf(stderr,
 				"Illegal character with code %d on line #%d\n",
@@ -855,10 +871,10 @@ YY_RULE_SETUP
 /*** END EXAMPLE - Change the example lexer rules above ***/
 case 34:
 YY_RULE_SETUP
-#line 112 "scanner.ll"
+#line 113 "scanner.ll"
 ECHO;
 	YY_BREAK
-#line 862 "scanner.cc"
+#line 878 "scanner.cc"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1133,7 +1149,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 	else
 		{
-			yy_size_t num_to_read =
+			int num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
@@ -1147,7 +1163,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 			if ( b->yy_is_our_buffer )
 				{
-				yy_size_t new_size = b->yy_buf_size * 2;
+				int new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -1178,7 +1194,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			(yy_n_chars), num_to_read );
+			(yy_n_chars), (size_t) num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = (yy_n_chars);
 		}
@@ -1288,7 +1304,7 @@ int yyFlexLexer::yy_get_next_buffer()
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register yy_size_t number_to_move = (yy_n_chars) + 2;
+		register int number_to_move = (yy_n_chars) + 2;
 		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
 		register char *source =
@@ -1331,7 +1347,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 		else
 			{ /* need more input */
-			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
+			int offset = (yy_c_buf_p) - (yytext_ptr);
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -1355,7 +1371,7 @@ int yyFlexLexer::yy_get_next_buffer()
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( yywrap(  ) )
-						return 0;
+						return EOF;
 
 					if ( ! (yy_did_buffer_switch_on_eof) )
 						YY_NEW_FILE;
@@ -1603,7 +1619,7 @@ void yyFlexLexer::yypop_buffer_state (void)
  */
 void yyFlexLexer::yyensure_buffer_stack(void)
 {
-	yy_size_t num_to_alloc;
+	int num_to_alloc;
     
 	if (!(yy_buffer_stack)) {
 
@@ -1758,7 +1774,7 @@ void Examplefree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 112 "scanner.ll"
+#line 113 "scanner.ll"
 
 
 

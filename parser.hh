@@ -50,7 +50,7 @@
 namespace example {
 
 /* Line 35 of lalr1.cc  */
-#line 54 "parser.h"
+#line 54 "parser.hh"
   class position;
   class location;
 
@@ -60,7 +60,7 @@ namespace example {
 } // example
 
 /* Line 35 of lalr1.cc  */
-#line 64 "parser.h"
+#line 64 "parser.hh"
 
 #include "location.hh"
 
@@ -108,7 +108,7 @@ do {							\
 namespace example {
 
 /* Line 35 of lalr1.cc  */
-#line 112 "parser.h"
+#line 112 "parser.hh"
 
   /// A Bison parser.
   class Parser
@@ -120,7 +120,7 @@ namespace example {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 56 "parser.yy"
+#line 55 "parser.yy"
 
   int value;
   char character;
@@ -134,16 +134,16 @@ namespace example {
   class NLeft_expression *lexp;
   class NExpression *exp;
   class NVar *var;
-  std::vector<NExpression *>  *exprvec;
-  std::vector<NVar_declaration*>*  varvec;
-  std::vector<NStatement *>  *statvec;
+  class std::vector<NExpression *>  *exprvec;
+  class std::vector<NVar_declaration *>  *varvec;
+  class std::vector<NStatement *>  *statvec;
   int token;
   char *name;
 
 
 
 /* Line 35 of lalr1.cc  */
-#line 147 "parser.h"
+#line 147 "parser.hh"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -364,7 +364,7 @@ namespace example {
 } // example
 
 /* Line 35 of lalr1.cc  */
-#line 368 "parser.h"
+#line 368 "parser.hh"
 
 
 

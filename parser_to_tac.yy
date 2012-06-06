@@ -113,11 +113,11 @@ using std::vector;
 
  /*** BEGIN EXAMPLE - Change the example grammar rules below ***/
 
-program		: declarations { driver.programBlock = $1; }
+program		: declarations {  }
 		;
 
-declarations	: declaration { $$ = new NProgram(); $$->declarations->push_back($<decl>1); }
-		| declarations declaration { $1->declarations->push_back($<decl>2); }
+declarations	: declaration { }
+		| declarations declaration { }
 		;
 
 declaration	: fun_declaration
@@ -125,48 +125,48 @@ declaration	: fun_declaration
 		;
 
 fun_declaration	: type NAME LPAR formal_pars RPAR block 
-		{ $$ = new NFun_declaration($1, $2, $4, $6); }
+		{  }
 		;
 
-formal_pars	: /* empty */ { $$ = new VariableList(); }
-		| formal_par  { $$ = new VariableList(); $$->push_back($1); }
-		| formal_pars COMMA formal_par { $1->push_back($3); }
+formal_pars	: /* empty */ {  }
+		| formal_par  {  }
+		| formal_pars COMMA formal_par {  }
 		;
 
-formal_par	: type NAME { $$ = new NVar_declaration($1, $2); }
+formal_par	: type NAME {  }
 		;
 
-block		: LBRACE var_declarations statements RBRACE {$$ = new NBlock($2, $3); }
+block		: LBRACE var_declarations statements RBRACE { }
 		;
 
-var_declarations: /* empty */ { $$ = new VariableList(); }
-		| var_declaration { $$ = new VariableList(); $$->push_back($1); }
-		| var_declarations var_declaration { $1->push_back($2); }
+var_declarations: /* empty */ { }
+		| var_declaration { }
+		| var_declarations var_declaration { }
 		;
 
-var_declaration	: type NAME SEMICOLON { $$ = new NVar_declaration($1, $2); }
+var_declaration	: type NAME SEMICOLON { }
 		;
 
-type		: INT { $$ = new NType_int(); }
-		| QCHAR { $$ = new NType_char(); }
-		| type LBRACK exp RBRACK // array type
-			{ $$ = new NType_array($1, $3); }
+type		: INT {  }
+		| QCHAR {  }
+                | type LBRACK exp RBRACK /* array type */
+			{  }
 		;
 
-statements	: /* empty */ { $$ = new StatementList(); }
-		| statement { $$ = new StatementList(); $$->push_back($1); }
-		| statements SEMICOLON statement { $1->push_back($3); }
+statements	: /* empty */ { }
+		| statement {  }
+		| statements SEMICOLON statement { }
 		;
 
-statement	: IF LPAR exp RPAR statement { $$ = new NStatement_if($3, $5); }
-		| IF LPAR exp RPAR statement ELSE statement { $$ = new NStatement_if_double($3, $5, $7); }
-		| WHILE LPAR exp RPAR statement { $$ = new NStatement_while($3, $5); }
-		| lexp ASSIGN exp { $$ = new NStatement_assign($1, $3); }
-		| RETURN exp { $$ = new NStatement_return($2); }
-		| NAME LPAR pars RPAR /* function call */ { $$ = new NFunction_call($1, $3); }
-		| block {$$ = $<block>1; }
-		| WRITE exp { $$ = new NStatement_write($2); }
-		| READ lexp { $$ = new NStatement_read($2); }
+statement	: IF LPAR exp RPAR statement { }
+		| IF LPAR exp RPAR statement ELSE statement { }
+		| WHILE LPAR exp RPAR statement {  }
+		| lexp ASSIGN exp {  }
+		| RETURN exp {  }
+		| NAME LPAR pars RPAR /* function call */ { }
+		| block { }
+		| WRITE exp {  }
+		| READ lexp {  }
 		;
 
 lexp		: var { $$ = $<lexp>1; }

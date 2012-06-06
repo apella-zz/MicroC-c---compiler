@@ -10,9 +10,9 @@
 // forward declaration
 class NProgram;
 
-/** The example namespace is used to encapsulate the three parser classes
- * example::Parser, example::Scanner and example::Driver */
-namespace example {
+/** The miniC namespace is used to encapsulate the three parser classes
+ * miniC::Parser, miniC::Scanner and miniC::Driver */
+namespace miniC {
 
 /** The Driver class brings together all components. It creates an instance of
  * the Parser and Scanner classes and connects them. Then the input stream is
@@ -79,6 +79,6 @@ public:
     class NProgram *programBlock;
 };
 
-} // namespace example
+} // namespace miniC
 
 #endif // EXAMPLE_DRIVER_H

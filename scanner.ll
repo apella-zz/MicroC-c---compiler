@@ -8,8 +8,8 @@
 #include <vector>
 #include "scanner.h"
 /* import the parser's token type into a local typedef */
-typedef example::Parser::token token;
-typedef example::Parser::token_type token_type;
+typedef miniC::Parser::token token;
+typedef miniC::Parser::token_type token_type;
 
 /* By default yylex returns int, we use token_type. Unfortunately yyterminate
  * by default returns 0, which is not of token_type. */
@@ -26,8 +26,8 @@ typedef example::Parser::token_type token_type;
 /* enable c++ scanner class generation */
 %option c++
 
-/* change the name of the scanner class. results in "ExampleFlexLexer" */
-%option prefix="Example"
+/* change the name of the scanner class. results in "MiniCFlexLexer" */
+%option prefix="MiniC"
 
 /* the manual says "somewhat more optimized" */
 /* %option batch */
@@ -112,11 +112,11 @@ while                   return token::WHILE;
 
 %% /*** Additional Code ***/
 
-namespace example {
+namespace miniC {
 
 Scanner::Scanner(std::istream* in,
 		 std::ostream* out)
-    : ExampleFlexLexer(in, out)
+    : MiniCFlexLexer(in, out)
 {
 }
 
@@ -139,9 +139,9 @@ void Scanner::set_debug(bool b)
 #undef yylex
 #endif
 
-int ExampleFlexLexer::yylex()
+int MiniCFlexLexer::yylex()
 {
-    std::cerr << "in ExampleFlexLexer::yylex() !" << std::endl;
+    std::cerr << "in MiniCFlexLexer::yylex() !" << std::endl;
     return 0;
 }
 
@@ -151,7 +151,7 @@ int ExampleFlexLexer::yylex()
  * another input file, and scanning continues. If it returns true (non-zero),
  * then the scanner terminates, returning 0 to its caller. */
 
-int ExampleFlexLexer::yywrap()
+int MiniCFlexLexer::yywrap()
 {
     return 1;
 }
