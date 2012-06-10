@@ -1,5 +1,5 @@
 /* $Id: parser.yy 48 2009-09-05 08:07:10Z tb $ -*- mode: c++ -*- */
-/** \file parser.yy Contains the example Bison parser source */
+/** \file parser.yy Contains the miniC Bison parser source */
 
 %{ /*** C/C++ Declarations ***/
 
@@ -51,7 +51,7 @@ using std::vector;
 /* verbose error messages */
 %error-verbose
 
- /*** BEGIN EXAMPLE - Change the example grammar's tokens below ***/
+ /*** BEGIN MINIC - Change the miniC grammar's tokens below ***/
 
 %union {
   int value;
@@ -94,7 +94,7 @@ using std::vector;
 %type <statvec> statements
 %type <var> var
 
- /*** END EXAMPLE - Change the example grammar's tokens above ***/
+ /*** END MINIC - Change the miniC grammar's tokens above ***/
 
 %{
 
@@ -111,7 +111,7 @@ using std::vector;
 
 %% /*** Grammar Rules ***/
 
- /*** BEGIN EXAMPLE - Change the example grammar rules below ***/
+ /*** BEGIN MINIC - Change the miniC grammar rules below ***/
 
 program		: declarations {  }
 		;
@@ -204,7 +204,7 @@ pars		: /* empty */ { $$ = new ExpressionList(); }
 
 var		: NAME { $$ = new NVar($1); } 
 
- /*** END EXAMPLE - Change the example grammar rules above ***/
+ /*** END MINIC - Change the miniC grammar rules above ***/
 
 %% /*** Additional Code ***/
 

@@ -50,7 +50,7 @@ void Driver::error(const class location& l,
 
 void Driver::error(const std::string& m)
 {
-    std::cerr << m << std::endl;
+  std::cerr << "driver error: "  << m << std::endl;
 }
 
 } // namespace miniC

@@ -1,5 +1,5 @@
 /* $Id: parser.yy 48 2009-09-05 08:07:10Z tb $ -*- mode: c++ -*- */
-/** \file parser.yy Contains the example Bison parser source */
+/** \file parser.yy Contains the miniC Bison parser source */
 
 %{ /*** C/C++ Declarations ***/
 
@@ -51,7 +51,7 @@ using std::vector;
 /* verbose error messages */
 %error-verbose
 
- /*** BEGIN EXAMPLE - Change the example grammar's tokens below ***/
+ /*** BEGIN MINIC - Change the miniC grammar's tokens below ***/
 
 %union {
   int value;
@@ -67,7 +67,8 @@ using std::vector;
   class NExpression *exp;
   class NVar *var;
   std::vector<NExpression *>  *exprvec;
-  std::vector<NVar_declaration*>*  varvec;
+  std::vector<NVar_declaration*> *varvec;
+  std::vector<NFun_declaration*> *funvec;
   std::vector<NStatement *>  *statvec;
   int token;
   char *name;
@@ -76,8 +77,9 @@ using std::vector;
 /* the tokens */
 %token <name> NUMBER NAME
 %token <character> QCHAR
-%token <token> INT IF ELSE RETURN FLOAT STRUCT LPAR RPAR LBRACE RBRACE LESS LENGTH GREATER NOT NEQUAL END
+%token <token> INT IF ELSE RETURN FLOAT STRUCT LPAR RPAR LBRACE RBRACE LESS LENGTH GREATER NOT NEQUAL
 %token <token> LBRACK RBRACK EQUAL ASSIGN SEMICOLON COMMA DOT PLUS MINUS TIMES DIVIDE WHILE WRITE READ
+%token END 0 "end of file"
 
  /* type declarations of non-terminal symbols*/ 
 %type <value> unop binop
@@ -91,10 +93,22 @@ using std::vector;
 %type <exp> exp
 %type <exprvec> pars
 %type <varvec> formal_pars var_declarations
+ //%type <funvec> fun_declarations
 %type <statvec> statements
 %type <var> var
 
- /*** END EXAMPLE - Change the example grammar's tokens above ***/
+/*	associativity and precedence: in order of increasing precedence */
+
+%nonassoc	LOW  /* dummy token to suggest shift on ELSE */
+%nonassoc	ELSE /* higher than LOW */
+
+%nonassoc	EQUAL
+%left		PLUS	MINUS
+%left		TIMES	DIVIDE
+%left		UMINUS	/* dummy token to use as precedence marker */
+%left		DOT	LBRACK	/* C compatible precedence rules */
+
+ /*** END MINIC - Change the miniC grammar's tokens above ***/
 
 %{
 
@@ -111,11 +125,11 @@ using std::vector;
 
 %% /*** Grammar Rules ***/
 
- /*** BEGIN EXAMPLE - Change the example grammar rules below ***/
+ /*** BEGIN MINIC - Change the miniC grammar rules below ***/
 
-program		: declarations { driver.programBlock = $1; }
-		;
-
+program	:  declarations { driver.programBlock = $1; }
+	;
+/*
 declarations	: declaration { $$ = new NProgram(); $$->declarations->push_back($<decl>1); }
 		| declarations declaration { $1->declarations->push_back($<decl>2); }
 		;
@@ -123,88 +137,109 @@ declarations	: declaration { $$ = new NProgram(); $$->declarations->push_back($<
 declaration	: fun_declaration
 		| var_declaration
 		;
+*/
+declarations:   fun_declaration {$$ = new NProgram(); $$->functions->push_back($<fun_declaration>1); }
+        |       var_declaration { $$ = new NProgram(); $$->variables->push_back($<var_declaration>1); }
+        |       declarations fun_declaration {$1->functions->push_back($<fun_declaration>2); }
+        |       declarations var_declaration {$1->variables->push_back($<var_declaration>2); }
+        |       /* empty */ {$$ = new NProgram(); }
+        ;
 
-fun_declaration	: type NAME LPAR formal_pars RPAR block 
-		{ $$ = new NFun_declaration($1, $2, $4, $6); }
+
+		/*declarations : var_declarations fun_declarations {$$ = new NProgram($1, $2); }*/
+
+//fun_declarations: /* empty */ { $$ = new FunctionList(); }
+//		| fun_declaration { $$ = new FunctionList(); $$->push_back($1); }
+//		| fun_declarations fun_declaration { $1->push_back($2); }
+//		;
+
+fun_declaration:
+                type NAME LPAR formal_pars RPAR block 
+		{ $$ = new NFun_declaration($1, yylval.name, $4, $6); }
 		;
 
-formal_pars	: /* empty */ { $$ = new VariableList(); }
-		| formal_par  { $$ = new VariableList(); $$->push_back($1); }
-		| formal_pars COMMA formal_par { $1->push_back($3); }
+formal_pars:
+                /* empty */ { $$ = new VariableList(); }
+        |       formal_par  { $$ = new VariableList(); $$->push_back($1); }
+        |       formal_pars COMMA formal_par { $1->push_back($3); }
+        ;
+
+formal_par:     type NAME { $$ = new NVar_declaration($1, $2); }
 		;
 
-formal_par	: type NAME { $$ = new NVar_declaration($1, $2); }
-		;
-
-block		: LBRACE var_declarations statements RBRACE {$$ = new NBlock($2, $3); }
+block:          LBRACE var_declarations statements RBRACE {$$ = new NBlock($2, $3); }
 		;
 
 var_declarations: /* empty */ { $$ = new VariableList(); }
-		| var_declaration { $$ = new VariableList(); $$->push_back($1); }
-		| var_declarations var_declaration { $1->push_back($2); }
+        |       var_declaration { $$ = new VariableList(); $$->push_back($1); }
+        |       var_declarations var_declaration { $1->push_back($2); }
 		;
 
-var_declaration	: type NAME SEMICOLON { $$ = new NVar_declaration($1, $2); }
+var_declaration:type NAME SEMICOLON { $$ = new NVar_declaration($1, yylval.name); }
 		;
 
-type		: INT { $$ = new NType_int(); }
-		| QCHAR { $$ = new NType_char(); }
-		| type LBRACK exp RBRACK // array type
-			{ $$ = new NType_array($1, $3); }
+type:           INT { $$ = new NType_int(); }
+        |       QCHAR { $$ = new NType_char(); }
+        |       type LBRACK exp RBRACK // array type
+                    { $$ = new NType_array($1, $3); }
 		;
 
-statements	: /* empty */ { $$ = new StatementList(); }
-		| statement { $$ = new StatementList(); $$->push_back($1); }
-		| statements SEMICOLON statement { $1->push_back($3); }
+statements:     /*empty */ { $$ = new StatementList(); }
+        |       statement SEMICOLON { $$ = new StatementList(); $$->push_back($1); }
+        |       statements statement SEMICOLON { $1->push_back($2); }
 		;
 
-statement	: IF LPAR exp RPAR statement { $$ = new NStatement_if($3, $5); }
-		| IF LPAR exp RPAR statement ELSE statement { $$ = new NStatement_if_double($3, $5, $7); }
-		| WHILE LPAR exp RPAR statement { $$ = new NStatement_while($3, $5); }
-		| lexp ASSIGN exp { $$ = new NStatement_assign($1, $3); }
-		| RETURN exp { $$ = new NStatement_return($2); }
-		| NAME LPAR pars RPAR /* function call */ { $$ = new NFunction_call($1, $3); }
-		| block {$$ = $<block>1; }
-		| WRITE exp { $$ = new NStatement_write($2); }
-		| READ lexp { $$ = new NStatement_read($2); }
+statement:      IF LPAR exp RPAR statement { $$ = new NStatement_if($3, $5); }
+        |       IF LPAR exp RPAR statement ELSE statement { $$ = new NStatement_if_double($3, $5, $7); }
+        |       WHILE LPAR exp RPAR statement { $$ = new NStatement_while($3, $5); }
+        |       lexp ASSIGN exp { $$ = new NStatement_assign($1, $3); }
+        |       RETURN exp { $$ = new NStatement_return($2); }
+        |       NAME LPAR pars RPAR /* function call */ { $$ = new NFunction_call($1, $3); }
+        |       block {$$ = $<block>1; }
+        |       WRITE exp { $$ = new NStatement_write($2); }
+        |       READ lexp { $$ = new NStatement_read($2); }
 		;
 
-lexp		: var { $$ = $<lexp>1; }
-		| lexp LBRACK exp RBRACK { $$ = new NArray_access($1, $3); }	// array access
+lexp:           var { $$ = $<lexp>1; }
+        |       lexp LBRACK exp RBRACK { $$ = new NArray_access($1, $3); }	// array access
 		;
 
-exp		: lexp {$$ = $<exp>1; } 
-		| exp binop exp { $$ = new NBinary_op($1, $3, $2); }
-		| unop exp { $$ = new NUnary_op($2, $1); }
-		| LPAR exp RPAR { $$ = $2; }
-                | NUMBER { $$ = new NNumber(atol($1)); delete $1; }
-		| NAME LPAR pars RPAR { $$ = new NFunction_call($1, $3); } // function call
+exp: 
+                lexp {$$ = $<exp>1; } 
+        |       exp binop exp { $$ = new NBinary_op($1, $3, $2); }
+        |       unop exp { $$ = new NUnary_op($2, $1); }
+        |       LPAR exp RPAR { $$ = $2; }
+        |       NUMBER { $$ = new NNumber(yylval.value);}
+        |       NAME LPAR pars RPAR { $$ = new NFunction_call($1, $3); } // function call
 /*| QCHAR { $$ = new NQchar($1); } */
-		| LENGTH lexp { $$ = new NLength($<lexp>2); } // size of an array
+        |       LENGTH lexp { $$ = new NLength($<lexp>2); } // size of an array
 		;
 
-binop		: MINUS		{ $$ = 0; }
-		| PLUS 		{ $$ = 1; }
-		| TIMES		{ $$ = 2; }
-		| DIVIDE	{ $$ = 3; }
-		| EQUAL		{ $$ = 4; }
-		| NEQUAL	{ $$ = 5; }
-		| GREATER	{ $$ = 6; }
-		| LESS		{ $$ = 7; }
+binop:
+MINUS		{ $$ = 0; }
+|       PLUS 		{ $$ = 1; }
+|       TIMES		{ $$ = 2; }
+|       DIVIDE	{ $$ = 3; }
+|       EQUAL		{ $$ = 4; }
+        |       NEQUAL	{ $$ = 5; }
+        |       GREATER	{ $$ = 6; }
+        |       LESS		{ $$ = 7; }
 		;
 
-unop		: MINUS		{ $$ = 0; }
-		| NOT		{ $$ = 1; }
+unop:
+                MINUS		{ $$ = 0; }
+        |       NOT		{ $$ = 1; }
 		;
 
-pars		: /* empty */ { $$ = new ExpressionList(); }
-		| exp { $$ = new ExpressionList(); $$->push_back($<exp>1); }
-		| pars COMMA exp { $1->push_back($<exp>3); }
+pars: 
+                /* empty */ { $$ = new ExpressionList(); }
+        |       exp { $$ = new ExpressionList(); $$->push_back($<exp>1); }
+        |       pars COMMA exp { $1->push_back($<exp>3); }
 		;
 
-var		: NAME { $$ = new NVar($1); } 
+var:            NAME { $$ = new NVar(yylval.name); } 
 
- /*** END EXAMPLE - Change the example grammar rules above ***/
+ /*** END MINIC - Change the miniC  grammar rules above ***/
 
 %% /*** Additional Code ***/
 

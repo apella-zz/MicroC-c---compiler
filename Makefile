@@ -7,16 +7,24 @@ YACC = bison
 
 CXXFLAGS = -W -Wall -Wextra -ansi -g
 LDFLAGS = 
+YACCFLAGS = --debug --verbose --warning=all
+LEXFLAGS = --align
+#flex arguments
+# --align	trade off larger tables for better memory alignment
+# --debug	enable debug mode in scanner
+# --verbose	write summary of scanner statistics to stdout
+
 
 HEADERS = driver.h parser.h scanner.h Node.h \
-    y.tab.h FlexLexer.h location.hh position.hh stack.hh
+    y.tab.h FlexLexer.h location.hh position.hh stack.hh \
+		compiler.h compiler_x86.h compiler_TAC.h
 
 all: exprtest
 
 # Generate scanner and parser
 
 parser.cc: parser.yy
-	$(YACC) -o parser.cc --defines=parser.h parser.yy
+	$(YACC) $(YACCFLAGS) -o parser.cc --defines=parser.h parser.yy
 scanner.cc: scanner.ll
 	$(LEX) -o scanner.cc scanner.ll
 
@@ -27,11 +35,11 @@ scanner.cc: scanner.ll
 
 # Link executable
 
-exprtest: main.o parser.o scanner.o driver.o
-	$(CXX) $(LDFLAGS) -o $@ main.o parser.o scanner.o driver.o
+exprtest: main.o parser.o scanner.o driver.o compiler_x86.o compiler_TAC.o
+	$(CXX) $(LDFLAGS) -o $@ main.o parser.o scanner.o driver.o compiler_x86.o compiler_TAC.o
 
 clean:
 	rm -f main *.o
 
 extraclean: clean
-	rm -f parser.cc parser.h scanner.cc
+	rm -f parser.cc parser.h scanner.cc parser.tab.hh parser.tab.cc parser.tab.hh location.hh position.hh stack.hh

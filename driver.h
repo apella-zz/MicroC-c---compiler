@@ -1,8 +1,8 @@
 // $Id: driver.h 17 2007-08-19 18:51:39Z tb $ 	
-/** \file driver.h Declaration of the example::Driver class. */
+/** \file driver.h Declaration of the miniC::Driver class. */
 
-#ifndef EXAMPLE_DRIVER_H
-#define EXAMPLE_DRIVER_H
+#ifndef MINIC_DRIVER_H
+#define MINIC_DRIVER_H
 
 #include <string>
 #include <vector>
@@ -81,4 +81,4 @@ public:
 
 } // namespace miniC
 
-#endif // EXAMPLE_DRIVER_H
+#endif // MINIC_DRIVER_H

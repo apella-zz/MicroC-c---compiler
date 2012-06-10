@@ -1,5 +1,5 @@
 /* $Id: scanner.ll 44 2008-10-23 09:03:19Z tb $ -*- mode: c++ -*- */
-/** \file scanner.ll Define the example Flex lexical scanner */
+/** \file scanner.ll Define the miniC Flex lexical scanner */
 
 %{ /*** C/C++ Declarations ***/
 
@@ -29,15 +29,18 @@ typedef miniC::Parser::token_type token_type;
 /* change the name of the scanner class. results in "MiniCFlexLexer" */
 %option prefix="MiniC"
 
+/* track line count in yylineno */
+/*%option yylineno*/
+
 /* the manual says "somewhat more optimized" */
 /* %option batch */
 
 /* enable scanner to generate debug output. disable this for release
  * versions. */
-/* %option debug */
+%option debug
 
 /* no support for include files is planned */
-/* %option yywrap nounput  */
+%option yywrap nounput
 
 /* enables the use of start condition stacks */
 /* %option stack */
@@ -59,7 +62,7 @@ alphanum		[A-Za-z0-9]
     yylloc->step();
 %}
 
- /*** BEGIN EXAMPLE - Change the example lexer rules below ***/
+ /*** BEGIN MINIC - Change the miniC lexer rules below ***/
 [ \t\r]			break;		/* ignore white space */
 
 int			{printf("an int!\n"); return token::INT;};	/* Keywords come before NAMEs */
@@ -72,7 +75,7 @@ read                    return token::READ;
 write                   return token::WRITE;
 length                  return token::LENGTH;
 while                   return token::WHILE;
-{alpha}{alphanum}*	{
+{alpha}{alphanum}*	{ printf("name: %s\n", yytext);
                           yylval->name = yytext;
 			  return token::NAME;
 			}
@@ -101,14 +104,16 @@ while                   return token::WHILE;
 "-"			return token::MINUS;
 "*"			return token::TIMES;
 "/"			return token::DIVIDE;
+<<EOF>> yyterminate();
 .			{
-			/*fprintf(stderr,
+			fprintf(stderr,
 				"Illegal character with code %d on line #%d\n",
-				*yytext, lineno);*/
+				*yytext,
+                                yylineno);
 			exit(1);
 			}
 
- /*** END EXAMPLE - Change the example lexer rules above ***/
+ /*** END MINIC - Change the miniC lexer rules above ***/
 
 %% /*** Additional Code ***/
 
@@ -131,8 +136,8 @@ void Scanner::set_debug(bool b)
 
 }
 
-/* This implementation of ExampleFlexLexer::yylex() is required to fill the
- * vtable of the class ExampleFlexLexer. We define the scanner's main yylex
+/* This implementation of MiniCFlexLexer::yylex() is required to fill the
+ * vtable of the class MiniCFlexLexer. We define the scanner's main yylex
  * function via YY_DECL to reside in the Scanner class instead. */
 
 #ifdef yylex
@@ -153,5 +158,5 @@ int MiniCFlexLexer::yylex()
 
 int MiniCFlexLexer::yywrap()
 {
-    return 1;
+        return 1;
 }

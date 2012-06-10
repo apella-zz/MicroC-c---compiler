@@ -1,10 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -42,26 +40,6 @@
 #include <string>
 #include <iostream>
 #include "stack.hh"
-
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-namespace example {
-
-/* Line 35 of lalr1.cc  */
-#line 54 "parser.h"
-  class position;
-  class location;
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-} // example
-
-/* Line 35 of lalr1.cc  */
-#line 64 "parser.h"
-
 #include "location.hh"
 
 /* Enabling traces.  */
@@ -82,33 +60,11 @@ namespace example {
 # define YYTOKEN_TABLE 0
 #endif
 
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
 
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)		\
-do {							\
-  if (N)						\
-    {							\
-      (Current).begin = (Rhs)[1].begin;			\
-      (Current).end   = (Rhs)[N].end;			\
-    }							\
-  else							\
-    {							\
-      (Current).begin = (Current).end = (Rhs)[0].end;	\
-    }							\
-} while (false)
-#endif
-
+namespace miniC {
 
 /* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-namespace example {
-
-/* Line 35 of lalr1.cc  */
-#line 112 "parser.h"
+#line 68 "parser.h"
 
   /// A Bison parser.
   class Parser
@@ -135,7 +91,8 @@ namespace example {
   class NExpression *exp;
   class NVar *var;
   std::vector<NExpression *>  *exprvec;
-  std::vector<NVar_declaration*>*  varvec;
+  std::vector<NVar_declaration*> *varvec;
+  std::vector<NFun_declaration*> *funvec;
   std::vector<NStatement *>  *statvec;
   int token;
   char *name;
@@ -143,7 +100,7 @@ namespace example {
 
 
 /* Line 35 of lalr1.cc  */
-#line 147 "parser.h"
+#line 104 "parser.h"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -155,6 +112,7 @@ namespace example {
     {
       /* Tokens.  */
    enum yytokentype {
+     END = 0,
      NUMBER = 258,
      NAME = 259,
      QCHAR = 260,
@@ -173,21 +131,22 @@ namespace example {
      GREATER = 273,
      NOT = 274,
      NEQUAL = 275,
-     END = 276,
-     LBRACK = 277,
-     RBRACK = 278,
-     EQUAL = 279,
-     ASSIGN = 280,
-     SEMICOLON = 281,
-     COMMA = 282,
-     DOT = 283,
-     PLUS = 284,
-     MINUS = 285,
-     TIMES = 286,
-     DIVIDE = 287,
-     WHILE = 288,
-     WRITE = 289,
-     READ = 290
+     LBRACK = 276,
+     RBRACK = 277,
+     EQUAL = 278,
+     ASSIGN = 279,
+     SEMICOLON = 280,
+     COMMA = 281,
+     DOT = 282,
+     PLUS = 283,
+     MINUS = 284,
+     TIMES = 285,
+     DIVIDE = 286,
+     WHILE = 287,
+     WRITE = 288,
+     READ = 289,
+     LOW = 290,
+     UMINUS = 291
    };
 
     };
@@ -261,6 +220,14 @@ namespace example {
     /// The location stack.
     location_stack_type yylocation_stack_;
 
+    /// Whether the given \c yypact_ value indicates a defaulted state.
+    /// \param yyvalue   the value to check
+    static bool yy_pact_value_is_default_ (int yyvalue);
+
+    /// Whether the given \c yytable_ value indicates a syntax error.
+    /// \param yyvalue   the value to check
+    static bool yy_table_value_is_error_ (int yyvalue);
+
     /// Internal symbol numbers.
     typedef unsigned char token_number_type;
     /* Tables.  */
@@ -268,7 +235,7 @@ namespace example {
     static const short int yypact_[];
     static const signed char yypact_ninf_;
 
-    /// For a state, default rule to reduce.
+    /// For a state, default reduction number.
     /// Unless\a  yytable_ specifies something else to do.
     /// Zero means the default is an error.
     static const unsigned char yydefact_[];
@@ -299,10 +266,8 @@ namespace example {
     static const char* const yytname_[];
 #endif
 
-#if YYERROR_VERBOSE
     /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    virtual std::string yytnamerr_ (const char *n);
-#endif
+    static std::string yytnamerr_ (const char *n);
 
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
@@ -358,13 +323,10 @@ namespace example {
     class Driver& driver;
   };
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-} // example
+} // miniC
 
 /* Line 35 of lalr1.cc  */
-#line 368 "parser.h"
+#line 330 "parser.h"
 
 
 
